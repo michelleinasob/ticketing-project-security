@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -44,7 +45,10 @@ public class SecurityConfig {
 //              .antMatchers("/project/**").hasRole("MANAGER")
 //              .antMatchers("/task/employee/**").hasRole("EMPLOYEE")
 //              .antMatchers("/task/**").hasRole("MANAGER")
-                .antMatchers("/user/**").hasAuthority("ROLE_ADMIN")
+                .antMatchers("/user/**").hasAuthority("Admin")
+                .antMatchers("/project/**").hasAuthority("Manager")
+                .antMatchers("/task/employee/**").hasAuthority("Employee")
+                .antMatchers("/task/**").hasAuthority("Manager")
                 .antMatchers(
                         "/",
                         "/login",
@@ -60,7 +64,12 @@ public class SecurityConfig {
                     .defaultSuccessUrl("/welcome")
                     .failureUrl("/login?error=true")
                     .permitAll()
+                .and()
+                .logout()
+                    .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                    .logoutSuccessUrl("/login")
                 .and().build();
+
     }
 
 }
